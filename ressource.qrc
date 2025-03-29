@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/logo">
+        <file>innovax.png</file>
+        <file>logo.png</file>
+    </qresource>
+</RCC>
