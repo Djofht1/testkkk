@@ -1058,7 +1058,7 @@ font: 36pt &quot;Segoe UI&quot;;
      <string>📍</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_15">
+   <widget class="QPushButton" name="genererRapportButton">
     <property name="geometry">
      <rect>
       <x>620</x>
@@ -1068,7 +1068,7 @@ font: 36pt &quot;Segoe UI&quot;;
      </rect>
     </property>
     <property name="text">
-     <string>google maps</string>
+     <string>rapport</string>
     </property>
    </widget>
    <widget class="QPushButton" name="trierDureeButton">

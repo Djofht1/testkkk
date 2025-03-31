@@ -1,3 +1,4 @@
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "analyse.h"
@@ -41,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Assuming ui->statButton is the pointer to your QPushButton in the UI
     connect(ui->statButton, &QPushButton::clicked, this, &MainWindow::on_statButton_clicked);
      connect(ui->envoyerEmailButton, &QPushButton::clicked, this, &MainWindow::on_envoyerEmailButton_clicked);
+    connect(ui->genererRapportButton, &QPushButton::clicked, this, &MainWindow::on_genererRapportButton_clicked);
 
 }
 
@@ -486,6 +488,52 @@ void MainWindow::on_envoyerEmailButton_clicked()
 }
 
 
+void MainWindow::on_genererRapportButton_clicked() {
+    // Sélectionner un patient
+    QModelIndex index = ui->tab_affichage_2->currentIndex();
+    if (!index.isValid()) {
+        QMessageBox::warning(this, "Erreur", "Veuillez sélectionner un patient.");
+        return;
+    }
+
+    // Récupérer les données du patient
+    QString nomPatient = ui->tab_affichage_2->model()->data(ui->tab_affichage_2->model()->index(index.row(), 0)).toString(); // Colonne 0 = Nom
+    QString description = "Le patient " + nomPatient + " présente les résultats des analyses suivantes : "; // Personnalisez cette phrase
+    QString analyses;
+
+    // Ajouter les analyses et résultats sous forme de paragraphes
+    int columnCount = ui->tab_affichage_2->model()->columnCount();
+    for (int col = 1; col < columnCount; col += 2) { // Supposons que les colonnes impaires contiennent les analyses et paires les résultats
+        QString nomAnalyse = ui->tab_affichage_2->model()->data(ui->tab_affichage_2->model()->index(index.row(), col)).toString();
+        QString resultat = ui->tab_affichage_2->model()->data(ui->tab_affichage_2->model()->index(index.row(), col + 1)).toString();
+        analyses += "<p><strong>Analyse : </strong>" + nomAnalyse + "<br><strong>Résultat : </strong>" + resultat + "</p>";
+    }
+
+    // Demander le chemin du fichier
+    QString fileName = QFileDialog::getSaveFileName(this, "Enregistrer le rapport", "", "PDF Files (*.pdf)");
+    if (fileName.isEmpty()) return;
+
+    // Configurer l'impression
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+
+    // Construire le contenu HTML
+    QString htmlContent = "<h2 style='text-align: center; color: #e27396;'>Rapport Médical</h2>";
+    htmlContent += "<h3>Nom du Patient : " + nomPatient + "</h3>";
+    htmlContent += "<p><strong>État du Patient :</strong> " + description + "</p>";
+    htmlContent += analyses;  // Ajouter les analyses dans le rapport
+
+    // Ajouter la signature Innovax
+    htmlContent += "<br><p style='text-align: right;'><strong>Signature :</strong> <br><img src='signature_innovax.png' width='150'></p>";
+
+    // Générer le PDF
+    QTextDocument document;
+    document.setHtml(htmlContent);
+    document.print(&printer);
+
+    QMessageBox::information(this, "Succès", "Le rapport médical a été généré avec succès.");
+}
 
 
 

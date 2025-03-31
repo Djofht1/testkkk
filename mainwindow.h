@@ -33,6 +33,7 @@ private slots:
    // bool validateEmail(const QString &email);
      bool validateEmail(const QString &email) ;
      void on_envoyerEmailButton_clicked();
+     void on_genererRapportButton_clicked();
 
 private:
     Ui::MainWindow *ui;
